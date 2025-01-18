@@ -5,7 +5,7 @@ import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: './',
+  base: '/htaccesshub/',
   plugins: [
     react(),
     visualizer({
@@ -43,12 +43,18 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     rollupOptions: {
+      input: {
+        main: './index.html',
+      },
       output: {
         manualChunks: {
           'vendor': ['react', 'react-dom'],
           'ui': ['@headlessui/react', '@heroicons/react'],
           'prism': ['prismjs'],
         },
+        assetFileNames: 'assets/[name].[ext]',
+        chunkFileNames: 'assets/[name].[hash].js',
+        entryFileNames: 'assets/[name].[hash].js',
       },
     },
     chunkSizeWarningLimit: 1000,
