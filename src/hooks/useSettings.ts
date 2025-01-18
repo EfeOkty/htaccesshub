@@ -1,23 +1,27 @@
 import { useState, useEffect } from 'react';
-import { cookieManager } from '../utils/cookieManager';
-import { UserSettings, DEFAULT_SETTINGS } from '../types/settings';
+import type { UserSettings } from '../types/settings';
+import { DEFAULT_SETTINGS } from '../types/settings';
 
 export function useSettings() {
-  const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS);
-
-  // İlk yüklemede ayarları çerezlerden al
-  useEffect(() => {
-    const savedSettings = cookieManager.get('userSettings');
+  const [settings, setSettings] = useState<UserSettings>(() => {
+    // localStorage'dan ayarları al
+    const savedSettings = localStorage.getItem('userSettings');
     if (savedSettings) {
-      setSettings(savedSettings);
+      try {
+        return JSON.parse(savedSettings);
+      } catch (error) {
+        console.error('Ayarlar yüklenirken hata:', error);
+        return DEFAULT_SETTINGS;
+      }
     }
-  }, []);
+    return DEFAULT_SETTINGS;
+  });
 
-  // Ayarları güncelle ve çerezlere kaydet
+  // Ayarları güncelle ve localStorage'a kaydet
   const updateSettings = (newSettings: Partial<UserSettings>) => {
     setSettings(prev => {
       const updated = { ...prev, ...newSettings };
-      cookieManager.set('userSettings', updated);
+      localStorage.setItem('userSettings', JSON.stringify(updated));
       return updated;
     });
   };

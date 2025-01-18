@@ -75,6 +75,12 @@ export default function App() {
     updateSettings({ selectedFeatures: newSelected });
   };
 
+  // Temizle butonuna tıklandığında
+  const handleClearSelected = () => {
+    setSelectedFeatures([]);
+    updateSettings({ selectedFeatures: [] });
+  };
+
   // Filtrelenmiş özellikleri hesapla
   const filteredFeatures = useMemo(() => {
     return allFeatures.filter(feature => {
@@ -269,10 +275,7 @@ export default function App() {
                   {t('features.selectedCount', { count: selectedFeatures.length })}
                 </div>
                 <button
-                  onClick={() => {
-                    setSelectedFeatures([]);
-                    updateSettings({ selectedFeatures: [] });
-                  }}
+                  onClick={handleClearSelected}
                   className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                 >
                   {t('features.clearSelected')}
