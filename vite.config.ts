@@ -2,8 +2,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
 
-export default defineConfig(({ command }) => ({
-  base: command === 'serve' ? '/' : '/htaccesshub/',
+export default defineConfig({
+  base: '/htaccesshub/',
   plugins: [
     react(),
     ViteImageOptimizer({
@@ -29,12 +29,13 @@ export default defineConfig(({ command }) => ({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    assetsDir: '',
     rollupOptions: {
       output: {
-        entryFileNames: 'assets/[name].[hash].js',
-        chunkFileNames: 'assets/[name].[hash].js',
-        assetFileNames: 'assets/[name].[hash].[ext]'
+        entryFileNames: '[name].[hash].js',
+        chunkFileNames: '[name].[hash].js',
+        assetFileNames: '[name].[ext]'
       }
     }
   },
-}))
+})
