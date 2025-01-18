@@ -29,14 +29,19 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    assetsDir: '',
+    assetsDir: 'assets',
     rollupOptions: {
       output: {
-        entryFileNames: '[name].[hash].js',
-        chunkFileNames: '[name].[hash].js',
-        assetFileNames: '[name].[ext]'
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: (assetInfo) => {
+          // Favicon ve manifest dosyaları için özel yol
+          if (/\.(ico|png|svg|webmanifest)$/.test(assetInfo.name)) {
+            return '[name][extname]';
+          }
+          return 'assets/[name].[hash][extname]';
+        }
       }
     }
-  }
-
+  },
 })

@@ -310,7 +310,10 @@ export default function App() {
                   >
                     {feature.id.startsWith('custom-') && (
                       <button
-                        onClick={() => removeCustomFeature(feature.id)}
+                        onClick={() => {
+                          removeCustomFeature(feature.id);
+                          window.location.reload();
+                        }}
                         className="absolute top-2 right-2 p-1 rounded-full hover:bg-red-500 hover:text-white transition-colors"
                         title={t('common.delete')}
                       >

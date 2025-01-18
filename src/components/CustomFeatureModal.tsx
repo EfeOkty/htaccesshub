@@ -35,6 +35,7 @@ export function CustomFeatureModal({ isOpen, onClose }: CustomFeatureModalProps)
     });
 
     onClose();
+    window.location.reload();
   };
 
   return (
