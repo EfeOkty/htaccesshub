@@ -106,8 +106,8 @@ export default function App() {
         setShowDiff(false)
       } else {
         setOriginalCode(code)
-        const fixedCode = fixHtaccess(code, results.errors)
-        setGeneratedCode(fixedCode)
+        const correctedContent = fixHtaccess(code);
+        setGeneratedCode(correctedContent)
         setShowDiff(true)
       }
     } catch (error) {
