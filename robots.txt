@@ -1,0 +1,18 @@
+# HtaccessHub robots.txt
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /sitemap.xml
+
+# Önbellek ve sistem dosyalarını engelle
+Disallow: /cache/
+Disallow: /tmp/
+Disallow: /*.json$
+Disallow: /*.txt$
+Disallow: /*.md$
+Disallow: /src/
+Disallow: /public/
+Disallow: /node_modules/
+
+# Sitemap
+Sitemap: https://efeokty.github.io/htaccesshub/sitemap.xml 

@@ -1,0 +1,163 @@
+# HtaccessHub SEO Yapılandırması
+Options +FollowSymLinks
+RewriteEngine On
+
+# Mobil cihaz yönlendirmesi
+RewriteCond %{HTTP_USER_AGENT} "android|blackberry|googlebot-mobile|iemobile|ipad|iphone|ipod|opera mobile|palmos|webos" [NC]
+RewriteCond %{REQUEST_URI} ^/$
+RewriteRule ^ /mobile/ [L,R=302]
+
+# www olmadan erişimi zorla (canonical URL)
+RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+# HTTPS'e yönlendir
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Trailing slash ekle
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !(.*)/$
+RewriteRule ^(.*)$ $1/ [L,R=301]
+
+# URL'lerden index.html'i kaldır
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s(.*)/index\.html [NC]
+RewriteRule ^ %1 [R=301,L]
+
+# SQL Injection koruması
+RewriteCond %{QUERY_STRING} [^a-z](declare|insert|drop|delete|update|union|select|alter|create|rename|truncate|replace)[^a-z] [NC,OR]
+RewriteCond %{QUERY_STRING} (concat|eval|var|exec)[^a-z] [NC]
+RewriteRule .* - [F]
+
+# XSS koruması
+RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+RewriteCond %{QUERY_STRING} javascript: [NC]
+RewriteRule .* - [F]
+
+# Özel 404 sayfası
+ErrorDocument 404 /404.html
+
+# Browser caching - Daha uzun süreli önbellekleme
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+    
+    # Favicon için özel önbellekleme
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresByType image/vnd.microsoft.icon "access plus 1 year"
+    
+    # CSS, JavaScript ve medya dosyaları - 2 yıl
+    ExpiresByType text/css "access plus 2 years"
+    ExpiresByType text/javascript "access plus 2 years"
+    ExpiresByType application/javascript "access plus 2 years"
+    ExpiresByType image/jpeg "access plus 2 years"
+    ExpiresByType image/png "access plus 2 years"
+    ExpiresByType image/gif "access plus 2 years"
+    ExpiresByType image/webp "access plus 2 years"
+    ExpiresByType image/svg+xml "access plus 2 years"
+    
+    # Fontlar - 2 yıl
+    ExpiresByType application/font-woff "access plus 2 years"
+    ExpiresByType application/font-woff2 "access plus 2 years"
+    ExpiresByType font/woff "access plus 2 years"
+    ExpiresByType font/woff2 "access plus 2 years"
+</IfModule>
+
+# Maksimum GZIP sıkıştırma
+<IfModule mod_deflate.c>
+    SetOutputFilter DEFLATE
+    DeflateCompressionLevel 9
+    
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE image/svg+xml
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE application/ld+json
+    
+    # PDF ve font dosyaları için sıkıştırma
+    AddOutputFilterByType DEFLATE application/pdf
+    AddOutputFilterByType DEFLATE application/x-font
+    AddOutputFilterByType DEFLATE application/x-font-opentype
+    AddOutputFilterByType DEFLATE application/x-font-otf
+    AddOutputFilterByType DEFLATE application/x-font-truetype
+    AddOutputFilterByType DEFLATE application/x-font-ttf
+    AddOutputFilterByType DEFLATE font/opentype
+    AddOutputFilterByType DEFLATE font/otf
+    AddOutputFilterByType DEFLATE font/ttf
+    
+    # Eski tarayıcılar için
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+</IfModule>
+
+# SEO ve Güvenlik başlıkları
+<IfModule mod_headers.c>
+    # Güvenlik başlıkları
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    
+    # Cache-Control başlıkları - Daha agresif önbellekleme
+    <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|webp|js|css|swf|svg|woff|woff2)$">
+        Header set Cache-Control "max-age=63072000, public"
+    </FilesMatch>
+    
+    # HTML ve XML için cache
+    <FilesMatch "\.(html|htm|xml)$">
+        Header set Cache-Control "max-age=7200, must-revalidate"
+    </FilesMatch>
+    
+    # Keep-Alive ve bağlantı optimizasyonu
+    Header set Connection keep-alive
+    
+    # Sunucu bilgilerini gizle
+    Header unset Server
+    Header unset X-Powered-By
+</IfModule>
+
+# Sitemap ve Robots.txt için özel kurallar
+<Files "sitemap.xml">
+    Header set X-Robots-Tag "noindex"
+    Header set Content-Type "application/xml"
+</Files>
+
+<Files "robots.txt">
+    Header set X-Robots-Tag "noindex"
+    Header set Content-Type "text/plain"
+</Files>
+
+# Karakter seti
+AddDefaultCharset UTF-8
+
+# ETags devre dışı bırak
+FileETag None
+
+# Dizin listelemeyi kapat
+Options -Indexes
+
+# Hotlink koruması
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?efeokty.github.io/htaccesshub [NC]
+RewriteRule \.(jpg|jpeg|png|gif|webp)$ - [NC,F,L]
+
+# IP bazlı hız sınırı
+<IfModule mod_ratelimit.c>
+    SetOutputFilter RATE_LIMIT
+    SetEnv rate-limit 1000
+</IfModule>
+
+# Sunucu imzasını kapat
+ServerSignature Off
+ServerTokens Prod 
