@@ -1,7 +1,7 @@
 import { useState, useEffect, Suspense, lazy, useMemo } from 'react'
 import { MagnifyingGlassIcon, ClipboardIcon, ArrowDownTrayIcon, CheckCircleIcon, ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { Transition } from '@headlessui/react'
-import { FEATURES, CATEGORIES, type Feature, generateHtaccess } from './features'
+import { FEATURES, CATEGORIES, generateHtaccess } from './features'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import Prism from 'prismjs'
 import { testHtaccess, fixHtaccess } from './utils/htaccessTester'

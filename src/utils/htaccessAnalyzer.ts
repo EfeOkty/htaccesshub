@@ -47,7 +47,7 @@ export function analyzeHtaccess(content: string): AnalysisResults {
     if (line.trim().startsWith('#') || !line.trim()) return;
 
     // Her direktif için kontrol
-    Object.entries(apacheDirectiveTests).forEach(([key, test]) => {
+    Object.values(apacheDirectiveTests).forEach(test => {
       if (test.pattern.test(line)) {
         // Modül bilgilerini ekle
         test.dependencies?.forEach(dep => {

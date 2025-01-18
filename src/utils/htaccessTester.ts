@@ -187,7 +187,7 @@ export function testHtaccess(content: string): TestResult {
   return result;
 }
 
-export function fixHtaccess(content: string, errors: string[]): string {
+export function fixHtaccess(content: string): string {
   let fixedContent = content;
   const lines = fixedContent.split('\n');
   const fixedLines = lines.map(line => {

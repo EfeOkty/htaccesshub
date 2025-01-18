@@ -10,15 +10,6 @@ type PathImpl<T, K extends keyof T> = K extends string
   : never;
 
 type Path<T> = PathImpl<T, keyof T> | keyof T;
-type PathValue<T, P extends Path<T>> = P extends `${infer K}.${infer Rest}`
-  ? K extends keyof T
-    ? Rest extends Path<T[K]>
-      ? PathValue<T[K], Rest>
-      : never
-    : never
-  : P extends keyof T
-    ? T[P]
-    : never;
 
 type TranslationType = typeof translations.tr;
 
